@@ -90,7 +90,7 @@ def crawl(group_id, pages, keywords, exclude):
         group = Group(
             id=group_id,
             name=g_info.select_one('h1').get_text().strip(),
-            alt=g_info.select_one("div[class='group-info-item group-loc']").get_text(),
+            alt=g_info.select_one("div[class='group-info-item group-loc']").get_text(),  # todo fix
             member_count=int(re.findall(r'[(](.*?)[)]', member_count_text)[0]),
             created=make_aware(datetime.strptime(re.findall(r"创建于(.+?) ",created_text)[0], DATE_FORMAT))
         )
