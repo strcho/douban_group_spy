@@ -83,13 +83,14 @@ def crawl(group_id, pages, keywords, exclude):
     except ObjectDoesNotExist:
         html = requests.get(GROUP_INFO_BASE_URL.format(DOUBAN_BASE_HOST, group_id), headers={'User-Agent': USER_AGENT}).text
         g_info = BeautifulSoup(html,'lxml')
+        print(g_info)
         lg.info(f'Getting group: {group_id} successful')
         member_count_text=g_info.select_one(f"a[href='https://www.douban.com/group/{group_id}/members']").get_text()
-        created_text=g_info.select_one('div[class="group-board"] p').get_text()
+        created_text=g_info.select_one('div[class="group-info-item group-loc"]').get_text()
         group = Group(
             id=group_id,
             name=g_info.select_one('h1').get_text().strip(),
-            alt=g_info.select_one("div[class='group-intro']").get_text(),
+            alt=g_info.select_one("div[class='group-info-item group-loc']").get_text(),
             member_count=int(re.findall(r'[(](.*?)[)]', member_count_text)[0]),
             created=make_aware(datetime.strptime(re.findall(r"创建于(.+?) ",created_text)[0], DATE_FORMAT))
         )
